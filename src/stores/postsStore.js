@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
+import { md } from '@/utils/markdown'
 
 export const usePostsStore = defineStore('posts', () => {
   const CATEGORY_OPTIONS = [

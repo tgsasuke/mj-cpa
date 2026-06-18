@@ -7,4 +7,17 @@ const md = new MarkdownIt({
   typographer: true,
 })
 
+md.renderer.rules.table_open = () => {
+  return `
+
+    <div class="custom-table-container"><table>
+  `
+};
+md.renderer.rules.table_close = () => {
+  return `
+    </table></div>
+
+  `
+} 
+
 export { md }

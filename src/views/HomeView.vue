@@ -1,89 +1,93 @@
 <script setup>
-import { ref, onMounted, computed } from 'vue'
-import { md } from '@/utils/markdown'
+import { onMounted, watch } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import { usePostsStore } from "@/stores/postsStore";
+import PostList from "@/components/PostList.vue";
 
-const createPostSchema = () => ({
-  title: '',
-  date: '',
-  category: '',
-  thumbnail: '',
-  body: '',
-  slug: '',
-  markdownContent: '',
+// 接收從 router 傳過來的當前文章物件
+const props = defineProps({
+  post: {
+    type: Object,
+    default: null
+  }
 })
 
-const posts = ref([])
+const postsStore = usePostsStore();
+const route = useRoute();
+const router = useRouter();
 
-const getAllPosts = async () => {
-  const modules = import.meta.glob('/src/content/blog/*.md', { as: 'raw', eager: true })
-  const tempArray = []
-  
-  for (const path in modules) {
-    const rawContent = modules[path]
-    
-    const rawSlug = path.split('/').pop().replace('.md', '')
-    const slug = decodeURIComponent(rawSlug)
-
-    const post = createPostSchema()
-    post.slug = slug
-    
-    const match = rawContent.match(/^---([\s\S]*?)---([\s\S]*)$/)
-
-    if (match) {
-      const frontmatterRaw = match[1]
-      const bodyRaw = match[2]
-
-      post.body = bodyRaw.trim()
-
-      frontmatterRaw.split('\n').forEach(line => {
-        const parts = line.split(':')
-        if (parts.length >= 2) {
-          const key = parts[0].trim()
-          // 考慮到 time 有可能包含多個冒號 (如 17:24:00)，所以用 join 結合回去
-          const value = parts.slice(1).join(':').trim()
-
-          // 自動對對碰：如果 key 存在於 schema 中就寫入
-          if (key in post) {
-            post[key] = value
-          }
-        }
-      })
-    }else{
-      post.body = rawContent.trim()
+// 💡 修正導覽列清單未更新的問題：精準監聽網址上的 category 變化
+watch(
+  () => route.params.category,
+  (newCategory) => {
+    if (newCategory) {
+      postsStore.setCurrentCategory(newCategory);
     }
-    post.markdownContent = md.render(post.body)
-    tempArray.push(post)
-  }
-  // 依日期排序
-  posts.value = tempArray.sort((a, b) => new Date(b.date) - new Date(a.date))
-
-  console.log(posts.value)
-}
-
-
+  },
+  { immediate: true }
+);
 
 onMounted(() => {
-  getAllPosts()
-})
-
+  postsStore.getAllPosts();
+});
 </script>
 
 <template>
-  <div>
-    <h1>Home</h1>
-    <div class="flex gap-2">
-      <RouterLink to="/admin">Admin</RouterLink>
-      <a href="/admin/index.html">Admin</a>
+  <div class="max-w-[800px] mx-auto p-5">
+    
+    <div class="flex justify-between items-center border-b pb-4 mb-6">
+      <h1 class="text-xl font-black text-gray-800 tracking-wide">
+        <RouterLink to="/">CMS 系統模板測試</RouterLink>
+      </h1>
+      <a href="/admin/index.html" class="px-3 py-1.5 bg-gray-800 text-white rounded-md text-sm hover:bg-gray-700 transition-colors">
+        管理後台
+      </a>
     </div>
 
-    <div>
-      <div class="prose prose-sm max-w-none" v-for="post in posts" :key="post.slug">
-        <h2>{{ post.title }}</h2>
-        <div v-html="post.markdownContent" class="markdown-text-block"></div>
+    <nav class="flex gap-2 p-1 bg-gray-100 rounded-lg mb-6">
+      <RouterLink
+        v-for="opt in postsStore.CATEGORY_OPTIONS"
+        :key="opt.value"
+        :to="`/${opt.value}`"
+        class="flex-1 text-center py-2 text-sm font-medium rounded-md transition-all"
+        :class="route.params.category === opt.value 
+          ? 'bg-white text-blue-600 shadow-sm' 
+          : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'"
+      >
+        {{ opt.label }}
+      </RouterLink>
+    </nav>
+
+    <main class="bg-white rounded-xl">
+      
+      <div v-if="props.post" class="animation-fade">
+        <RouterLink :to="`/${route.params.category}`" class="text-gray-500 text-sm inline-block mb-4 hover:text-gray-700">
+          ← 返回 {{ postsStore.CATEGORY_OPTIONS.find(o => o.value === route.params.category)?.label }} 列表
+        </RouterLink>
+        
+        <h2 class="text-3xl font-black text-gray-900 leading-tight">{{ props.post.title }}</h2>
+        <div class="flex gap-4 text-xs text-gray-400 my-3">
+          <span>📅 {{ props.post.date }}</span>
+          <span>🏷️ {{ props.post.category }}</span>
+        </div>
+        
+        <hr class="my-5 border-gray-100" />
+        
+        <div v-html="props.post.markdownContent" class="prose prose-blue max-w-none markdown-text-block"></div>
       </div>
-    </div>
 
+      <div v-else>
+        <div class="flex items-center gap-2 mb-4">
+          <span class="w-1.5 h-5 bg-blue-500 rounded-full"></span>
+          <h2 class="text-lg font-bold text-gray-800">
+            {{ postsStore.CATEGORY_OPTIONS.find(o => o.value === route.params.category)?.label }}
+          </h2>
+        </div>
+        
+        <PostList :postlist="postsStore.currentCategoryPosts" />
+      </div>
 
+    </main>
   </div>
 </template>
 
@@ -93,5 +97,13 @@ onMounted(() => {
 }
 .markdown-text-block :last-child {
   margin-bottom: 0;
+}
+/* 轉場微動畫 */
+.animation-fade {
+  animation: fadeIn 0.2s ease-in-out;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 </style>
