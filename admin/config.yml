@@ -12,7 +12,7 @@ collections:
 # 1. 讀書雜記
   - name: "reading_posts"
     label: "讀書雜記"
-    folder: "public/content/blog"
+    folder: "src/content/blog"
     create: true
     slug: "{{category}}-{{year}}{{month}}{{day}}-{{hour}}{{minute}}{{second}}-{{slug}}"
     filter: { field: "category", value: "reading" }
@@ -26,7 +26,7 @@ collections:
   # 2. 最近稅法規定與新聞
   - name: "tax_news_posts"
     label: "最近稅法規定與新聞"
-    folder: "public/content/blog"
+    folder: "src/content/blog"
     create: true
     slug: "{{category}}-{{year}}{{month}}{{day}}-{{hour}}{{minute}}{{second}}-{{slug}}"
     filter: { field: "category", value: "tax-news" }
@@ -40,7 +40,7 @@ collections:
   # 3. 稅法雜記
   - name: "tax_notes_posts"
     label: "稅法雜記"
-    folder: "public/content/blog"
+    folder: "src/content/blog"
     create: true
     slug: "{{category}}-{{year}}{{month}}{{day}}-{{hour}}{{minute}}{{second}}-{{slug}}"
     filter: { field: "category", value: "tax-notes" }
@@ -54,7 +54,7 @@ collections:
   # 4. 公司法與勞動法雜記
   - name: "law_notes_posts"
     label: "公司法與勞動法雜記"
-    folder: "public/content/blog"
+    folder: "src/content/blog"
     create: true
     slug: "{{category}}-{{year}}{{month}}{{day}}-{{hour}}{{minute}}{{second}}-{{slug}}"
     filter: { field: "category", value: "law-notes" }
