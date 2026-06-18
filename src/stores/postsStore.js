@@ -31,47 +31,56 @@ export const usePostsStore = defineStore('posts', () => {
   })
 
   const getAllPosts = async () => {
-    const modules = import.meta.glob('/src/content/blog/*.md', { as: 'raw', eager: true })
+    const modules = import.meta.glob('/public/content/blog/*.md')
     const tempArray = []
     
     for (const path in modules) {
-      const rawContent = modules[path]
-  
+      const cleanPath = path.replace('/public', '')
+      const fetchUrl = import.meta.env.BASE_URL + cleanPath.replace(/^\//, '')
       const slug = path.split('/').pop().replace('.md', '')
+
+      try {
+        // 3. 透過 fetch 非同步抓取靜態 Markdown 內容
+        const response = await fetch(fetchUrl)
+        if (!response.ok) continue
+        const rawContent = await response.text()
   
-      const post = createPostSchema()
-      post.slug = slug
-      
-      const match = rawContent.match(/^---([\s\S]*?)---([\s\S]*)$/)
-  
-      if (match) {
-        const frontmatterRaw = match[1]
-        const bodyRaw = match[2]
-  
-        post.body = bodyRaw.trim()
-  
-        frontmatterRaw.split('\n').forEach(line => {
-          const parts = line.split(':')
-          if (parts.length >= 2) {
-            const key = parts[0].trim()
-            // 考慮到 time 有可能包含多個冒號 (如 17:24:00)，所以用 join 結合回去
-            const value = parts.slice(1).join(':').trim()
-  
-            // 自動對對碰：如果 key 存在於 schema 中就寫入
-            if (key in post) {
-              post[key] = value
+        const post = createPostSchema()
+        post.slug = slug
+        
+        const match = rawContent.match(/^---([\s\S]*?)---([\s\S]*)$/)
+    
+        if (match) {
+          const frontmatterRaw = match[1]
+          const bodyRaw = match[2]
+    
+          post.body = bodyRaw.trim()
+    
+          frontmatterRaw.split('\n').forEach(line => {
+            const parts = line.split(':')
+            if (parts.length >= 2) {
+              const key = parts[0].trim()
+              const value = parts.slice(1).join(':').trim()
+    
+              // 去除可能包在欄位兩端的引號 (例如 title: "123456")
+              const cleanValue = value.replace(/^["']|["']$/g, '')
+
+              if (key in post) {
+                post[key] = cleanValue
+              }
             }
-          }
-        })
-      }else{
-        post.body = rawContent.trim()
+          })
+        } else {
+          post.body = rawContent.trim()
+        }
+        post.markdownContent = md.render(post.body)
+        tempArray.push(post)
+      } catch (error) {
+        console.error(`無法載入文章: ${path}`, error)
       }
-      post.markdownContent = md.render(post.body)
-      tempArray.push(post)
     }
     // 依日期排序
     posts.value = tempArray.sort((a, b) => new Date(b.date) - new Date(a.date))
-  
     console.log(posts.value)
   }
 

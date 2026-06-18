@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import PostDetail from '@/components/PostDetail.vue'
 import HomeView from '@/views/HomeView.vue'
 import { usePostsStore } from '@/stores/postsStore'
 
@@ -10,7 +9,8 @@ const router = createRouter({
       path: '/admin',
       component: HomeView,
       beforeEnter(to, from, next) {
-        window.location.href = '/admin/index.html'
+        // 結合專案 base 路徑（開發環境為 /mj-cpa/admin/index.html）
+        window.location.href = `${import.meta.env.BASE_URL}admin/index.html`
       }
     },
     {
