@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+  <head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="/mj-cpa/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MJ CPA</title>
+    <!-- <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script> -->
+    <script type="module" crossorigin src="/mj-cpa/assets/index-5LUa1S9R.js"></script>
+    <link rel="stylesheet" crossorigin href="/mj-cpa/assets/index-Cyp-Ld7c.css">
+  </head>
+  <body>
+    <div id="app"></div>
+
+    <!-- <script>
+      // 檢查網址列有沒有包含 Netlify 的各種 Token (邀請、確認、密碼重設)
+      if (document.location.hash.includes('invite_token') || 
+          document.location.hash.includes('confirmation_token') || 
+          document.location.hash.includes('recovery_token')) {
+        
+        // 如果有，立刻把整串帶有 Token 的網址導向到 /admin/ 頁面
+        // 這樣可以防止 Vue Router 把 Token 沖掉
+        document.location.href = "/admin/" + document.location.hash;
+      } else {
+        // 如果只是一般訪客，等登入成功後再自動跳轉到後台
+        if (window.netlifyIdentity) {
+          window.netlifyIdentity.on("init", (user) => {
+            if (!user) {
+              window.netlifyIdentity.on("login", () => {
+                document.location.href = "/admin/";
+              });
+            }
+          });
+        }
+      }
+    </script> -->
+
+  </body>
+</html>

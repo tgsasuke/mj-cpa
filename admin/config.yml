@@ -1,0 +1,66 @@
+backend:
+  name: github
+  repo: tgsasuke/mj-cpa
+  branch: master
+
+local_backend: true
+
+media_folder: "public/images/uploads"
+public_folder: "/images/uploads"
+
+collections:
+# 1. 讀書雜記
+  - name: "reading_posts"
+    label: "讀書雜記"
+    folder: "public/content/blog"
+    create: true
+    slug: "{{category}}-{{year}}{{month}}{{day}}-{{hour}}{{minute}}{{second}}-{{slug}}"
+    filter: { field: "category", value: "reading" }
+    fields:
+      - { label: "標題", name: "title", widget: "string" }
+      - { label: "發布日期", name: "date", widget: "datetime" }
+      - { label: "文章類型", name: "category", widget: "hidden", default: "reading" } # 隱藏並設為預設值
+      - { label: "封面圖片", name: "thumbnail", widget: "image", required: false }
+      - { label: "內容", name: "body", widget: "markdown" }
+
+  # 2. 最近稅法規定與新聞
+  - name: "tax_news_posts"
+    label: "最近稅法規定與新聞"
+    folder: "public/content/blog"
+    create: true
+    slug: "{{category}}-{{year}}{{month}}{{day}}-{{hour}}{{minute}}{{second}}-{{slug}}"
+    filter: { field: "category", value: "tax-news" }
+    fields:
+      - { label: "標題", name: "title", widget: "string" }
+      - { label: "發布日期", name: "date", widget: "datetime" }
+      - { label: "文章類型", name: "category", widget: "hidden", default: "tax-news" }
+      - { label: "封面圖片", name: "thumbnail", widget: "image", required: false }
+      - { label: "內容", name: "body", widget: "markdown" }
+
+  # 3. 稅法雜記
+  - name: "tax_notes_posts"
+    label: "稅法雜記"
+    folder: "public/content/blog"
+    create: true
+    slug: "{{category}}-{{year}}{{month}}{{day}}-{{hour}}{{minute}}{{second}}-{{slug}}"
+    filter: { field: "category", value: "tax-notes" }
+    fields:
+      - { label: "標題", name: "title", widget: "string" }
+      - { label: "發布日期", name: "date", widget: "datetime" }
+      - { label: "文章類型", name: "category", widget: "hidden", default: "tax-notes" }
+      - { label: "封面圖片", name: "thumbnail", widget: "image", required: false }
+      - { label: "內容", name: "body", widget: "markdown" }
+
+  # 4. 公司法與勞動法雜記
+  - name: "law_notes_posts"
+    label: "公司法與勞動法雜記"
+    folder: "public/content/blog"
+    create: true
+    slug: "{{category}}-{{year}}{{month}}{{day}}-{{hour}}{{minute}}{{second}}-{{slug}}"
+    filter: { field: "category", value: "law-notes" }
+    fields:
+      - { label: "標題", name: "title", widget: "string" }
+      - { label: "發布日期", name: "date", widget: "datetime" }
+      - { label: "文章類型", name: "category", widget: "hidden", default: "law-notes" }
+      - { label: "封面圖片", name: "thumbnail", widget: "image", required: false }
+      - { label: "內容", name: "body", widget: "markdown" }
