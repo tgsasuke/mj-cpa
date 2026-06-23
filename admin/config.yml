@@ -1,6 +1,6 @@
 backend:
   name: git-gateway
-  # repo: tgsasuke/mj-cpa
+  repo: tgsasuke/mj-cpa
   branch: master
 
 local_backend: true
