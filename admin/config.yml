@@ -1,5 +1,5 @@
 backend:
-  name: githubgit-gateway
+  name: git-gateway
   # repo: tgsasuke/mj-cpa
   branch: master
 
