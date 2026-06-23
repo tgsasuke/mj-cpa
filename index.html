@@ -5,12 +5,24 @@
     <link rel="icon" href="/mj-cpa/favicon.ico">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MJ CPA</title>
-    <!-- <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script> -->
+    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
     <script type="module" crossorigin src="/mj-cpa/assets/index-D4oavhnV.js"></script>
     <link rel="stylesheet" crossorigin href="/mj-cpa/assets/index-C3osn7Cf.css">
   </head>
   <body>
     <div id="app"></div>
+
+    <script>
+      if (window.netlifyIdentity) {
+        window.netlifyIdentity.on("initialize", user => {
+          if (!user) {
+            window.netlifyIdentity.on("login", () => {
+              document.location.reload();
+            });
+          }
+        });
+      }
+    </script>
 
     <!-- <script>
       // 檢查網址列有沒有包含 Netlify 的各種 Token (邀請、確認、密碼重設)
