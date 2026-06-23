@@ -1,7 +1,8 @@
 backend:
-  name: git-gateway
+  name: github
   repo: tgsasuke/mj-cpa
   branch: master
+  base_url: https://decap-cms-oauth-provider.vercel.app # 👈 指向這個公用閘道
 
 local_backend: true
 
